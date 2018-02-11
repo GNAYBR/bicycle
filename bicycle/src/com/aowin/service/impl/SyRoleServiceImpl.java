@@ -64,7 +64,8 @@ public class SyRoleServiceImpl implements SyRoleService {
     @Transactional
     @Override
     public String updateSyRole(SyRoleVo syRoleVo) {
-        List<SyRole> roles = syRoleMapper.findSyRoleByRoleName(syRoleVo.getSyRole().getRoleName());
+        List<SyRole> roles = syRoleMapper.findSyRoleByFullName(syRoleVo.getSyRole().getRoleName());
+        System.out.println(roles);
         if (roles.size() > 1) {
             return "rename";
         }
