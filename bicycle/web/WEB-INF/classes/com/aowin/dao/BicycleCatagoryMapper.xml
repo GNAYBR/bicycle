@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aowin.dao.BicycleCatagoryMapper">
+
+    <sql id="bicycleCatagoryContent">
+        CATAGORY_ID AS catagoryId,CATAGORY_NAME AS catagoryName,FRAME_TYPE AS frameType,TIRE_TYPE AS tireType,WEIGHT AS weight,
+        HEIGHT AS height,LENGTH AS length,RING_TYPE AS ringType,BASKET AS basket,BACKSEAT AS backseat,BICYCLE_SEAT AS bicycleSeat,
+        HANDBRAKE AS handBrake,REMARK AS remark,USER_ID AS userId,OPERATOR_TIME AS operatorTime
+    </sql>
+
+
+    <insert id="insertBicycleCatagory" parameterType="com.aowin.pojo.BicycleCatagory">
+        <selectKey resultType="Integer" order="BEFORE" keyProperty="catagoryId">
+            SELECT BICYCLE_CATAGORY_SEQUENCE.nextval AS catagoryId FROM dual
+        </selectKey>
+        INSERT INTO
+        BICYCLE_CATAGORY(CATAGORY_ID,CATAGORY_NAME,FRAME_TYPE,TIRE_TYPE,WEIGHT,HEIGHT,LENGTH,RING_TYPE,BASKET,BACKSEAT,BICYCLE_SEAT,HANDBRAKE,
+        REMARK,USER_ID,OPERATOR_TIME)
+        VALUES(
+        #{catagoryId},
+        #{catagoryName},
+        #{frameType,javaType=String,jdbcType=VARCHAR},
+        #{tireType,javaType=String,jdbcType=VARCHAR},
+        #{weight,javaType=Double,jdbcType=DOUBLE},
+        #{height,javaType=Double,jdbcType=DOUBLE},
+        #{length,javaType=Double,jdbcType=DOUBLE},
+        #{ringType,javaType=String,jdbcType=VARCHAR},
+        #{basket,javaType=String,jdbcType=VARCHAR},
+        #{backseat,javaType=String,jdbcType=VARCHAR},
+        #{bicycleSeat,javaType=String,jdbcType=VARCHAR},
+        #{handBrake,javaType=String,jdbcType=VARCHAR},
+        #{remark,javaType=String,jdbcType=VARCHAR},
+        #{userId},
+        #{operatorTime}
+        )
+    </insert>
+
+    <select id="findAllBicycleCatagories" resultType="com.aowin.pojo.BicycleCatagory">
+        SELECT
+        <include refid="bicycleCatagoryContent"/>
+        FROM BICYCLE_CATAGORY
+    </select>
+
+    <delete id="deleteBicycleCatagoryByCatagoryId" parameterType="Integer">
+        DELETE FROM BICYCLE_CATAGORY WHERE CATAGORY_ID = #{_parameter}
+    </delete>
+
+    <update id="updateBicycleCatagory" parameterType="com.aowin.pojo.BicycleCatagory">
+        UPDATE BICYCLE_CATAGORY SET
+        CATAGORY_NAME=#{catagoryName},FRAME_TYPE=#{frameType,javaType=String,jdbcType=VARCHAR},
+        TIRE_TYPE=#{tireType,javaType=String,jdbcType=VARCHAR},
+        WEIGHT=#{weight,javaType=Double,jdbcType=DOUBLE},
+        HEIGHT=#{height,javaType=Double,jdbcType=DOUBLE},
+        LENGTH=#{length,javaType=Double,jdbcType=DOUBLE},
+        RING_TYPE=#{ringType,javaType=String,jdbcType=VARCHAR},
+        BASKET=#{basket,javaType=String,jdbcType=VARCHAR},
+        BACKSEAT=#{backseat,javaType=String,jdbcType=VARCHAR},
+        BICYCLE_SEAT=#{bicycleSeat,javaType=String,jdbcType=VARCHAR},
+        HANDBRAKE=#{handBrake,javaType=String,jdbcType=VARCHAR},
+        REMARK=#{remark,javaType=String,jdbcType=VARCHAR}
+        WHERE
+        CATAGORY_ID=#{catagoryId}
+    </update>
+
+    <select id="findBicycleCatagoryById" resultType="com.aowin.pojo.BicycleCatagory" parameterType="Integer">
+        SELECT
+        <include refid="bicycleCatagoryContent"/>
+        FROM BICYCLE_CATAGORY
+        <where>
+            CATAGORY_ID = #{_parameter}
+        </where>
+    </select>
+    <select id="findBicycleCatagoriesByCatagoryName" parameterType="String" resultType="com.aowin.pojo.BicycleCatagory">
+        SELECT
+        <include refid="bicycleCatagoryContent"/>
+        FROM BICYCLE_CATAGORY
+        <where>
+            CATAGORY_NAME = #{_parameter}
+        </where>
+    </select>
+</mapper>

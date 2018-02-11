@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aowin.dao.BicycleOrderMapper">
+
+    <sql id="bicycleOrderContent">
+        ORDER_ID AS orderId,ORDER_CODE AS orderCode,VENDER_ID AS venderId,BUY_DATE AS buyDate,BUY_NUM as buyNum,BUY_PRICE AS buyPrice,
+        PERSON_IN_CHARGE AS personIncharge,INVOICE_NO AS invoiceNo,USER_ID AS userId,OPERATOR_TIME AS operatorTime,REMARK AS remark,STATUS AS status
+    </sql>
+
+
+    <insert id="insertBicycleOrder" parameterType="com.aowin.pojo.BicycleOrder" keyProperty="orderId">
+        <selectKey keyProperty="orderId" resultType="Integer" order="BEFORE">
+            SELECT BICYCLE_ORDER_SEQUENCE.nextval AS orderId FROM dual
+        </selectKey>
+        INSERT INTO
+        BICYCLE_ORDER(order_id,ORDER_CODE,VENDER_ID,BUY_DATE,BUY_NUM,BUY_PRICE,PERSON_IN_CHARGE,INVOICE_NO,USER_ID,OPERATOR_TIME,REMARK,STATUS)
+        VALUES
+        (
+        #{orderId},
+        #{orderCode,javaType=String,jdbcType=VARCHAR},
+        #{venderId,javaType=int,jdbcType=INTEGER},
+        #{buyDate},#{buyNum},#{buyPrice},
+        #{personInCharge,javaType=String,jdbcType=VARCHAR},
+        #{invoiceNo,javaType=String,jdbcType=VARCHAR},
+        #{userId,javaType=int,jdbcType=INTEGER},
+        #{operatorTime,javaType=String,jdbcType=VARCHAR},
+        #{remark,javaType=String,jdbcType=VARCHAR},
+        #{status,javaType=String,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <select id="findAllBicycleOrder" resultType="com.aowin.pojo.BicycleOrder">
+        SELECT
+        <include refid="bicycleOrderContent"/>
+        FROM BICYCLE_ORDER
+    </select>
+
+    <select id="findBicycleOrderByOrderId" resultType="com.aowin.pojo.BicycleOrder" parameterType="Integer">
+        SELECT
+        <include refid="bicycleOrderContent"/>
+        FROM BICYCLE_ORDER
+        <where>
+            <if test="_parameter!=null">
+                ORDER_ID = #{_parameter}
+            </if>
+        </where>
+    </select>
+
+</mapper>

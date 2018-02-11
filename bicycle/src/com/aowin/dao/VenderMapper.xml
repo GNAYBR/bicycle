@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aowin.dao.VenderMapper">
+
+    <sql id="venderContent">
+        VENDER_ID AS venderId,VENDER_CODE as venderCode,VENDER_TYPE as venderType,
+        VENDER_NAME AS venderName,ADDRESS AS address,TELPHONE AS telphone,CONTACTS AS contacts,
+        PRODUCT_LICENSE AS productLicense,BUSSINESS_REGISTRATION_NO AS bussinessRegistrationNo,
+        REGISTERED_CAPITAL AS registeredCapital,USER_ID AS userId,CREATE_TIME AS createTime,ZXBJ AS zxbj,
+        REMARK AS remark
+    </sql>
+    <select id="findAllVenders" resultType="com.aowin.pojo.Vender">
+        SELECT
+        <include refid="venderContent"/>
+        FROM VENDER
+    </select>
+</mapper>

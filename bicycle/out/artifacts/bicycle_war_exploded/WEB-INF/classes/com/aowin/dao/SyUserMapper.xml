@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aowin.dao.SyUserMapper">
+
+    <sql id="userContent">
+          USER_ID as userId,ROLE_ID as roleId,
+          LOGIN_NAME AS loginName,
+          USERNAME as userName,PASSWORD as password,
+          ACTIVE_FLAG as activeFlag,ZXBJ AS zxbj,
+          OFFICE_PHONE as officePhone,
+          MOBILE_PHONE as mobilePhone,EMAIL as email
+    </sql>
+    <insert id="insertSyUser" parameterType="com.aowin.pojo.SyUser">
+        <selectKey resultType="Integer" order="BEFORE" keyProperty="userId">
+            SELECT SYUSER_SEQUENCE.nextval AS userId FROM dual
+        </selectKey>
+        INSERT INTO
+        SYUSER(USER_ID,ROLE_ID,LOGIN_NAME,USERNAME,PASSWORD,ACTIVE_FLAG,ZXBJ,OFFICE_PHONE,MOBILE_PHONE,EMAIL)
+        VALUES (
+        #{userId},
+        #{roleId,javaType=int,jdbcType=INTEGER},
+        #{loginname},
+        #{username,javaType=String,jdbcType=VARCHAR},
+        #{password},#{activeFlag},#{zxbj},
+        #{officePhone,javaType=String,jdbcType=VARCHAR},
+        #{mobilePhone,javaType=String,jdbcType=VARCHAR},
+        #{email,javaType=String,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="updateSyUser" parameterType="com.aowin.pojo.SyUser">
+        UPDATE SYUSER
+        SET ROLE_ID=#{roleId},USERNAME=#{username},
+        OFFICE_PHONE=#{officePhone},MOBILE_PHONE=#{mobilePhone},EMAIL=#{email}
+        WHERE
+        USER_ID=#{userId}
+    </update>
+
+    <update id="signOutSyUserByUserId" parameterType="Integer">
+        UPDATE SYUSER
+        SET ZXBJ=1
+        WHERE USER_ID=#{_parameter}
+    </update>
+
+    <select id="findSyUserByUserId" resultType="com.aowin.pojo.SyUser" parameterType="Integer">
+        SELECT
+        <include refid="userContent"/>
+        FROM SYUSER
+        WHERE USER_ID=#{_parameter}
+    </select>
+
+
+    <select id="findSyUser" resultType="com.aowin.pojo.SyUser">
+        SELECT
+        *
+        FROM
+        (SELECT  <include refid="userContent"/>,ROWNUM as RN FROM SYUSER a
+        <where>
+            a.zxbj='0'  AND <![CDATA[ROWNUM <= #{end}]]>
+        </where> ORDER BY a.USER_ID) s
+        <where>
+            <![CDATA[s.RN > #{begin}]]>
+        </where>
+
+        ORDER BY userId
+    </select>
+
+    <select id="findSyUserLoggedOut" resultType="com.aowin.pojo.SyUser">
+        SELECT
+        <include refid="userContent"/>
+        FROM SYUSER s
+        <where>
+            s.ZXBj=1
+        </where>
+    </select>
+
+    <select id="findSyUserByRoleId" parameterType="Integer" resultType="com.aowin.pojo.SyUser">
+        SELECT
+        <include refid="userContent"/>
+        FROM SYUSER s
+        <where>
+            s.ROLE_ID = #{_parameter}
+        </where>
+    </select>
+
+    <select id="findSyUserByLoginName" parameterType="java.lang.String" resultType="com.aowin.pojo.SyUser">
+        SELECT
+        <include refid="userContent"/>
+        FROM SYUSER
+        <if test="#{_parameter != null}">
+            <where>
+                LOGIN_NAME = #{_parameter}
+            </where>
+        </if>
+
+    </select>
+
+    <select id="findSyUserByUserName" parameterType="java.lang.String" resultType="com.aowin.pojo.SyUser">
+        SELECT
+        <include refid="userContent"/>
+        FROM SYUSER
+        <where>
+            USERNAME = #{_parameter}
+        </where>
+    </select>
+
+    <select id="findCountRows" resultType="java.lang.Integer">
+        SELECT COUNT(USER_ID) FROM SYUSER WHERE ZXBJ='0'
+    </select>
+
+    <select id="findSyUsersByUserNameAndRoleId" resultType="com.aowin.pojo.SyUser">
+        <bind name="_userName" value="'%'+userName+'%'"/>
+        SELECT
+        *
+        FROM
+        (SELECT  <include refid="userContent"/>,ROWNUM as RN FROM SYUSER a
+        <where>
+            a.zxbj='0'  AND <![CDATA[ROWNUM <= #{end}]]>
+            <if test="userName!=null and userName!=''">
+
+                AND a.username LIKE #{_userName}
+
+            </if>
+            <if test="roleId != null">
+
+                AND a.role_id = #{roleId}
+
+            </if>
+        </where> ORDER BY a.USER_ID) s
+        <where>
+            <![CDATA[s.RN > #{begin}]]>
+
+        </where>
+
+
+    </select>
+
+    <select id="findCountRowsByUserNameAndRoleId" resultType="Integer">
+        <bind name="_userName" value="'%'+userName+'%'"/>
+        SELECT COUNT(USER_ID)
+        FROM SYUSER
+        <where>
+        ZXBJ='0'
+            <if test="userName!=null and userName!=''">
+
+                   AND USERNAME LIKE #{_userName}
+
+            </if>
+
+            <if test="roleId != null">
+
+                  AND  ROLE_ID = #{roleId}
+
+            </if>
+        </where>
+
+
+    </select>
+</mapper>

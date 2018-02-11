@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.aowin.dao.MsphaseMapper">
+
+    <!--    <sql id="msphase">
+            PHASEID AS phaseid,URL AS url,DESCRIPTION AS description
+        </sql>-->
+
+    <!--获取所有数据-->
+    <select id="findAllMsphases" resultType="com.aowin.pojo.Msphase">
+        SELECT
+        PHASEID AS phaseid,URL AS url,DESCRIPTION AS description
+         FROM MSPHASE
+         ORDER BY phaseid
+    </select>
+
+    <!--新增一条-->
+    <insert id="insertMsphase" parameterType="com.aowin.pojo.Msphase">
+        <selectKey resultType="Integer" order="BEFORE" keyProperty="phaseid">
+            SELECT MSPHASE_SEQUENCE.nextval AS phaseid FROM dual
+        </selectKey>
+        INSERT INTO MSPHASE(PHASEID,URL,DESCRIPTION)
+         VALUES(#{phaseid},
+        #{url,javaType=String,jdbcType=VARCHAR},
+        #{description,javaType=String,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <!--根据id删除一条msphase-->
+    <delete id="deleteMsphaseByPhaseid" parameterType="Integer">
+        DELETE FROM MSPHASE
+         WHERE PHASEID=#{v}
+    </delete>
+
+    <!--update-->
+    <update id="updateMsphase" parameterType="com.aowin.pojo.Msphase">
+        UPDATE MSPHASE
+         SET URL=#{url},DESCRIPTION=#{description}
+        WHERE PHASEID=#{phaseid}
+    </update>
+
+    <!--根据description模糊查询msphase-->
+    <select id="findMsphaseByDescription" parameterType="String" resultType="com.aowin.pojo.Msphase">
+        <bind name="pattern" value="'%' + _parameter + '%'" />
+
+        SELECT
+        PHASEID AS phaseid,URL AS url,DESCRIPTION AS description FROM MSPHASE
+        <where>
+            <if test="_parameter!=null and _parameter!=''">
+              DESCRIPTION LIKE #{pattern}
+            </if>
+        </where>
+    </select>
+
+    <select id="findMsphaseByUrl" parameterType="java.lang.String" resultType="com.aowin.pojo.Msphase">
+        SELECT
+        PHASEID AS phaseid,URL AS url,DESCRIPTION AS description
+        FROM MSPHASE
+        <where>
+            URL = #{_parameter}
+        </where>
+    </select>
+    <select id="findMsphaseByPhaseId" resultType="com.aowin.pojo.Msphase" parameterType="Integer">
+        SELECT
+        PHASEID AS phaseid,URL AS url,DESCRIPTION AS description FROM MSPHASE
+        <where>
+            <if test="_parameter!=null and _parameter!=''">
+                PHASEID = #{_parameter}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aowin.dao.SyRoleMapper">
+
+    <insert id="insertSyRole" parameterType="com.aowin.pojo.SyRole">
+        <selectKey resultType="Integer" order="BEFORE" keyProperty="roleId">
+            SELECT SYROLE_SEQUENCE.nextval AS roleId FROM dual
+        </selectKey>
+        INSERT INTO
+        SYROLE(ROLE_ID,ROLE_NAME,ROLE_DESCRIBE)
+        VALUES (
+        #{roleId},
+        #{roleName,javaType=String,jdbcType=VARCHAR},
+        #{roleDescribe,javaType=String,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <delete id="deleteSyRoleByRoleId" parameterType="Integer">
+        DELETE FROM SYROLE WHERE ROLE_ID = #{_parameter}
+    </delete>
+
+    <select id="findAllSyRoles" resultType="com.aowin.pojo.SyRole">
+        SELECT ROLE_ID AS roleId,ROLE_NAME AS roleName,ROLE_DESCRIBE AS roleDescribe FROM SYROLE ORDER BY roleId
+    </select>
+
+    <select id="findSyRoleByRoleId" parameterType="Integer" resultType="com.aowin.pojo.SyRole">
+        SELECT ROLE_ID AS roleId,ROLE_NAME AS roleName,ROLE_DESCRIBE AS roleDescribe FROM SYROLE s WHERE s.ROLE_ID=#{_parameter}
+    </select>
+
+    <update id="updateSyRole" parameterType="com.aowin.pojo.SyRole">
+        UPDATE SYROLE SET ROLE_NAME=#{roleName},ROLE_DESCRIBE=#{roleDescribe} WHERE ROLE_ID=#{roleId}
+    </update>
+
+    <select id="findSyRoleByRoleName" parameterType="java.lang.String" resultType="com.aowin.pojo.SyRole">
+        <bind name="pattern" value="'%'+_parameter+'%'"></bind>
+        SELECT
+        ROLE_ID AS roleId,ROLE_NAME AS roleName,ROLE_DESCRIBE AS roleDescribe
+        FROM SYROLE
+        <where>
+            <if test="_parameter !=null and _parameter!=''">
+                ROLE_NAME like #{pattern}
+            </if>
+        </where>
+    </select>
+
+    <select id="findSyRoleByFullName" parameterType="java.lang.String" resultType="com.aowin.pojo.SyRole">
+                SELECT
+        ROLE_ID AS roleId,ROLE_NAME AS roleName,ROLE_DESCRIBE AS roleDescribe
+        FROM SYROLE
+        <where>
+            <if test="_parameter !=null and _parameter!=''">
+                ROLE_NAME = #{_parameter}
+            </if>
+        </where>
+    </select>
+</mapper>

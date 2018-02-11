@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aowin.dao.BicycleDeployMapper">
+
+
+
+
+    <insert id="insertBicycleDeploy" parameterType="com.aowin.pojo.BicycleDeploy">
+        <selectKey  resultType="Integer" keyProperty="deployId" order="BEFORE">
+            SELECT BICYCLE_DEPLOY_SEQUENCE.nextval AS deployId FROM dual
+        </selectKey>
+        INSERT INTO
+        BICYCLE_DEPLOY(DEPLOY_ID,BICYCLE_ID,FROM_PILE_ID,TO_PILE_ID,FROM_CARD_ID,FROM_TIME,TO_CARD_ID,TO_TIME,TO_REASON,FROM_REASON,REMARK,STATUS)
+        VALUES (
+        #{deployId},
+        #{bicycleId,javaType=int,jdbcType=INTEGER},
+        #{fromPileId,javaType=int,jdbcType=INTEGER},
+        #{toPileId,javaType=int,jdbcType=INTEGER},
+        #{fromCardId,javaType=int,jdbcType=INTEGER},
+        #{fromTime,javaType=String,jdbcType=VARCHAR},
+        #{toCardId,javaType=int,jdbcType=INTEGER},
+        #{toTime,javaType=String,jdbcType=VARCHAR},
+        #{toReason,javaType=String,jdbcType=VARCHAR},
+        #{fromReason,javaType=String,jdbcType=VARCHAR},
+        #{remark,javaType=String,jdbcType=VARCHAR},
+        #{status,javaType=String,jdbcType=VARCHAR}
+        )
+    </insert>
+
+</mapper>
